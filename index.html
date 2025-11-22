@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QR Send - Pro</title>
+    <title>QR Send - Pro Ultimate</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -28,7 +28,6 @@
             --white: #ffffff;
             --red: #d32f2f;
             --green: #25d366;
-            --ripple-color: rgba(7, 94, 84, 0.6);
         }
 
         body {
@@ -49,7 +48,7 @@
             position: relative;
         }
 
-        /* SIDEBAR (Connection & Files) */
+        /* SIDEBAR */
         .sidebar {
             width: 350px;
             border-right: 1px solid #ddd;
@@ -71,10 +70,6 @@
             flex-shrink: 0;
         }
 
-        .header h2 {
-            font-size: 18px;
-        }
-
         .status-badge {
             font-size: 12px;
             background: rgba(255, 255, 255, 0.2);
@@ -87,6 +82,9 @@
             text-align: center;
             flex-grow: 1;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #qrcode {
@@ -95,6 +93,7 @@
             display: inline-block;
             border-radius: 8px;
             margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         #qrcode img {
@@ -273,47 +272,6 @@
             padding: 5px;
         }
 
-        /* NEW: Dynamic Wave Animation for Folder Icon */
-        .btn-pulse {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-pulse::before,
-        .btn-pulse::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-color: var(--ripple-color);
-            opacity: 0;
-            z-index: -1;
-            animation: wave 2s infinite ease-out;
-        }
-
-        .btn-pulse::after {
-            animation-delay: 1s;
-        }
-
-        @keyframes wave {
-            0% {
-                width: 100%;
-                height: 100%;
-                opacity: 0.6;
-            }
-            100% {
-                width: 250%;
-                height: 250%;
-                opacity: 0;
-            }
-        }
-        /* END Wave Animation */
-
-
         .messages {
             flex-grow: 1;
             overflow-y: auto;
@@ -331,6 +289,7 @@
             font-size: 14px;
             position: relative;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            word-break: break-word;
         }
 
         .msg.sent {
@@ -363,7 +322,7 @@
         }
 
         .msg img {
-            max-width: 250px;
+            max-width: 100%;
             border-radius: 6px;
             cursor: pointer;
             display: block;
@@ -460,18 +419,67 @@
             100% { opacity: 0.3; }
         }
 
-        /* Mobile Header Controls */
-        .mobile-only {
-            display: none;
+        .mobile-only { display: none; }
+
+        /* =========================================
+           NEW 3D MAGIC FOLDER BUTTON (Mobile UI)
+           ========================================= */
+        .magic-folder-btn {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+            z-index: 1;
+            /* Base Shadow */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        
+        .magic-folder-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* The Multi-Color Glow Animation */
+        .magic-folder-btn::before {
+            content: "";
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #4285f4, #db4437, #f4b400, #0f9d58);
+            z-index: -1;
+            border-radius: 14px;
+            filter: blur(10px);
+            opacity: 0.7;
+            animation: glowing 3s linear infinite;
+        }
+
+        .magic-folder-btn::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            border-radius: 12px;
+            z-index: -1;
+        }
+
+        @keyframes glowing {
+            0% { filter: blur(8px); opacity: 0.6; transform: scale(1); }
+            50% { filter: blur(12px); opacity: 0.8; transform: scale(1.05); }
+            100% { filter: blur(8px); opacity: 0.6; transform: scale(1); }
+        }
+        /* ========================================= */
 
         /* CALL OVERLAYS */
         .fullscreen-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: 2000;
             background: rgba(0, 0, 0, 0.9);
             display: none;
@@ -491,44 +499,27 @@
         }
 
         .call-avatar-lg {
-            width: 100px;
-            height: 100px;
-            background: #ddd;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            overflow: hidden;
+            width: 100px; height: 100px;
+            background: #ddd; border-radius: 50%;
+            margin: 0 auto 20px; overflow: hidden;
         }
 
         .call-actions {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 40px;
+            display: flex; justify-content: space-around; margin-top: 40px;
         }
 
         .call-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
+            width: 60px; height: 60px;
+            border-radius: 50%; border: none;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 24px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s;
         }
 
-        .btn-accept {
-            background: var(--green);
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-
-        .btn-reject {
-            background: var(--red);
-            color: white;
-        }
+        .btn-accept { background: var(--green); color: white; animation: pulse 1.5s infinite; }
+        .btn-reject { background: var(--red); color: white; }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
@@ -537,83 +528,49 @@
         }
 
         .active-call-ui {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
 
-        #remote-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        #remote-video { width: 100%; height: 100%; object-fit: cover; }
         #local-video {
-            position: absolute;
-            bottom: 100px;
-            right: 20px;
-            width: 120px;
-            height: 160px;
-            background: #333;
-            border-radius: 10px;
-            border: 2px solid white;
-            object-fit: cover;
+            position: absolute; bottom: 100px; right: 20px;
+            width: 120px; height: 160px;
+            background: #333; border-radius: 10px;
+            border: 2px solid white; object-fit: cover;
         }
 
         .call-controls-bar {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
+            position: absolute; bottom: 20px; left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.6);
-            padding: 15px 30px;
-            border-radius: 30px;
-            display: flex;
-            gap: 20px;
+            padding: 15px 30px; border-radius: 30px;
+            display: flex; gap: 20px;
         }
 
         .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
+            width: 50px; height: 50px;
+            border-radius: 50%; border: none;
             background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
             font-size: 20px;
         }
 
-        .control-btn.off {
-            background: white;
-            color: black;
-        }
+        .control-btn.off { background: white; color: black; }
+        .btn-hangup { background: var(--red); }
 
-        .btn-hangup {
-            background: var(--red);
-        }
-
-        /* Connection Lock Overlay */
+        /* Connection Lock */
         .connection-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
+            align-items: center; justify-content: center;
+            z-index: 9999; backdrop-filter: blur(10px);
             flex-direction: column;
         }
 
-        .lock-animation { text-align: center; }
         .lock-svg { width: 120px; height: 120px; }
         .lock-body { fill: #4285f4; animation: lockBody 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .lock-shackle { fill: none; stroke: #4285f4; stroke-width: 5; stroke-linecap: round; transform-origin: 50% 35%; animation: lockShackle 0.6s ease forwards 0.4s; }
@@ -623,141 +580,66 @@
         @keyframes lockShackle { 0% { transform: translateY(-15px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes checkDraw { to { stroke-dashoffset: 0; } }
 
+        /* PERMISSION GUIDE MODAL */
+        .perm-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .perm-card {
+            background: white; border-radius: 15px; padding: 25px;
+            max-width: 350px; width: 100%; text-align: center;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .perm-icon { font-size: 40px; margin-bottom: 15px; }
+        .perm-step { display: flex; align-items: center; gap: 10px; text-align: left; margin-bottom: 10px; font-size: 14px; color: #333; background: #f5f5f5; padding: 10px; border-radius: 8px; }
+        .perm-step span { background: var(--primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+        .btn-perm-ok { background: var(--primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold; }
+
         /* Modals */
         .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 3000;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 3000;
+            display: none; justify-content: center; align-items: center;
         }
-
-        .modal img {
-            max-width: 95%;
-            max-height: 90%;
-            border-radius: 8px;
-            object-fit: contain;
-        }
-
+        .modal img { max-width: 95%; max-height: 90%; border-radius: 8px; object-fit: contain; }
         .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.5);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 20px; right: 20px;
+            color: white; font-size: 30px; cursor: pointer;
+            background: rgba(0, 0, 0, 0.5); width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
-
         .modal-dl {
-            position: absolute;
-            bottom: 30px;
-            background: white;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: bold;
+            position: absolute; bottom: 30px; background: white;
+            color: black; padding: 10px 20px; border-radius: 20px;
+            text-decoration: none; font-weight: bold;
         }
 
         #scanner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 4000;
-            display: none;
-            flex-direction: column;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 4000;
+            display: none; flex-direction: column;
         }
-
         #qr-reader { flex-grow: 1; }
         .scanner-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            z-index: 4001;
-            font-size: 30px;
-            cursor: pointer;
+            position: absolute; top: 20px; right: 20px; color: white;
+            z-index: 4001; font-size: 30px; cursor: pointer;
         }
 
         /* MOBILE RESPONSIVE FIXES */
         @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-                position: relative;
-                overflow: hidden;
-                width: 100%;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 100;
-                transform: translateX(0);
-            }
-
-            .sidebar.hidden {
-                transform: translateX(-100%);
-            }
-
-            .chat-area {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 50;
-            }
-
-            .mobile-only {
-                display: inline-block;
-            }
-
-            .files-panel {
-                max-height: none;
-            }
-
-            .header {
-                padding-right: 10px;
-            }
-
-            .btn-close-sidebar {
-                background: none;
-                border: none;
-                color: white;
-                font-size: 20px;
-                cursor: pointer;
-                margin-right: 10px;
-            }
-
-            #local-video {
-                width: 90px;
-                height: 120px;
-                bottom: 120px;
-                right: 10px;
-            }
-
-            .input-area {
-                padding: 8px;
-                gap: 6px;
-            }
+            .app-container { flex-direction: column; width: 100%; }
+            .sidebar { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform: translateX(0); }
+            .sidebar.hidden { transform: translateX(-100%); }
+            .chat-area { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 50; }
+            .mobile-only { display: inline-block; }
+            .files-panel { max-height: none; }
+            .header { padding-right: 10px; }
+            .btn-close-sidebar { background: none; border: none; color: white; font-size: 20px; cursor: pointer; margin-right: 10px; }
+            #local-video { width: 90px; height: 120px; bottom: 120px; right: 10px; }
+            .input-area { padding: 8px; gap: 6px; }
         }
     </style>
 </head>
@@ -765,6 +647,7 @@
 <body>
 
     <div class="app-container">
+        <!-- SIDEBAR -->
         <div class="sidebar" id="sidebar">
             <div class="header">
                 <div style="display:flex; align-items:center;">
@@ -794,11 +677,11 @@
             </div>
         </div>
 
+        <!-- CHAT AREA -->
         <div class="chat-area" id="chat-area">
             <div class="chat-header">
                 <div class="chat-user">
-                    <button class="icon-btn mobile-only" id="folder-btn" onclick="toggleSidebar()">📁</button>
-                    
+                    <button class="icon-btn mobile-only" onclick="toggleSidebar()">📁</button>
                     <div class="avatar">👤</div>
                     <div>
                         <div style="font-weight:bold;">Peer</div>
@@ -823,7 +706,15 @@
             </div>
 
             <div class="input-area">
-                <button class="icon-btn" onclick="document.getElementById('img-input').click()">📎</button>
+                <!-- NEW 3D MAGIC FOLDER BUTTON FOR MOBILE -->
+                <button class="magic-folder-btn mobile-only" onclick="document.getElementById('file-input').click()">
+                    📂
+                </button>
+                <!-- Desktop Attachment Button -->
+                <button class="icon-btn mobile-hidden" style="display:none;" onclick="document.getElementById('img-input').click()">📎</button>
+                <!-- Use this for image upload -->
+                <button class="icon-btn" onclick="document.getElementById('img-input').click()">📷</button>
+
                 <input type="file" id="img-input" accept="image/*" style="display:none">
                 <input type="text" id="msg-input" placeholder="Type a message...">
                 <button class="send-btn" onmousedown="event.preventDefault()" onclick="sendText()">➤</button>
@@ -831,6 +722,9 @@
         </div>
     </div>
 
+    <!-- OVERLAYS -->
+
+    <!-- CONNECTION LOCK OVERLAY -->
     <div class="connection-overlay" id="connection-overlay">
         <div class="lock-animation">
             <svg class="lock-svg" viewBox="0 0 100 100">
@@ -838,16 +732,37 @@
                 <rect class="lock-body" x="30" y="45" width="40" height="35" rx="5" />
                 <polyline class="checkmark" points="40,62 47,69 62,54" />
             </svg>
-            <p
-                style="color: white; font-weight: 600; margin-top: 15px; font-size: 18px; font-family: 'Segoe UI', sans-serif;">
-                End-to-End Encrypted</p>
+            <p style="color: white; font-weight: 600; margin-top: 15px; font-size: 18px;">End-to-End Encrypted</p>
+        </div>
+    </div>
+
+    <!-- PERMISSION GUIDE MODAL -->
+    <div class="perm-modal" id="perm-modal">
+        <div class="perm-card">
+            <div class="perm-icon">🔒</div>
+            <h3>Permission Blocked</h3>
+            <p style="color:#666; font-size:13px; margin-bottom:15px;">To make calls, please enable microphone/camera access.</p>
+            
+            <div class="perm-step">
+                <span>1</span>
+                <div>Tap the <b>Lock Icon</b> (🔒) or <b>Settings</b> in the URL bar.</div>
+            </div>
+            <div class="perm-step">
+                <span>2</span>
+                <div>Select <b>Permissions</b> or <b>Site Settings</b>.</div>
+            </div>
+            <div class="perm-step">
+                <span>3</span>
+                <div>Set Camera & Microphone to <b>Allow</b> or <b>Ask</b>.</div>
+            </div>
+
+            <button class="btn-perm-ok" onclick="document.getElementById('perm-modal').style.display='none'">Okay, I'll do it</button>
         </div>
     </div>
 
     <div class="fullscreen-overlay" id="incoming-call-ui">
         <div class="call-card">
-            <div class="call-avatar-lg"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="100%">
-            </div>
+            <div class="call-avatar-lg"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="100%"></div>
             <h2 id="incoming-call-type">Incoming Call...</h2>
             <p style="color:#aaa; margin-top:10px;">Peer is calling you</p>
             <div class="call-actions">
@@ -888,6 +803,14 @@
         let typingTimeout;
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Check if mobile to show/hide elements
+            if (window.innerWidth < 768) {
+                document.querySelector('.mobile-hidden').style.display = 'none';
+            } else {
+                document.querySelector('.mobile-hidden').style.display = 'flex';
+                document.querySelector('.magic-folder-btn').style.display = 'none'; // Hide magic btn on desktop
+            }
+
             window.addEventListener('beforeunload', (e) => {
                 if (!isHost) { history.replaceState(null, null, window.location.pathname); }
             });
@@ -911,7 +834,7 @@
                 }
             });
 
-            // Image Listener Fix
+            // Image Listener
             document.getElementById('img-input').addEventListener('change', function () {
                 const file = this.files[0];
                 if (!file) return;
@@ -919,7 +842,7 @@
                 reader.onload = function (e) {
                     const msgId = Date.now();
                     const base64 = e.target.result;
-                    conn.send({ type: 'image', content: base64, id: msgId });
+                    if(conn) conn.send({ type: 'image', content: base64, id: msgId });
                     addImage(base64, 'sent', msgId);
                 };
                 reader.readAsDataURL(file);
@@ -936,18 +859,17 @@
             const hash = window.location.hash.substring(1);
             isHost = !hash;
 
-            // Enhanced STUN server list for better mobile connectivity
+            // FIX: Enhanced STUN server list (Crucial for Mobile-to-Mobile)
             const peerConfig = {
+                debug: 2,
                 config: {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' },
-                        { urls: 'stun:stun2.l.google.com:19302' },
-                        { urls: 'stun:stun3.l.google.com:19302' },
-                        { urls: 'stun:stun4.l.google.com:19302' },
-                        { urls: 'stun:global.stun.twilio.com:3478' }
-                    ],
-                    iceCandidatePoolSize: 10
+                        { urls: 'stun:global.stun.twilio.com:3478' },
+                        { urls: 'stun:stun.voip.blackberry.com:3478' },
+                        { urls: 'stun:stun.mit.edu:8000' },
+                        { urls: 'stun:stun.sipgate.net:3478' }
+                    ]
                 }
             };
 
@@ -959,49 +881,45 @@
                     new QRCode(document.getElementById('qrcode'), { text: window.location.href + '#' + id, width: 180, height: 180 });
                 } else {
                     document.getElementById('connect-panel').style.display = 'none';
+                    document.getElementById('connection-status').innerText = 'Connecting...';
                     connectToPeer(hash);
                     if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
                 }
             });
 
             peer.on('connection', (c) => setupConnection(c));
+            
             peer.on('call', (call) => {
                 document.getElementById('incoming-call-ui').style.display = 'flex';
                 document.getElementById('incoming-call-type').innerText = call.metadata?.type === 'video' ? 'Incoming Video Call...' : 'Incoming Voice Call...';
                 window.pendingCall = call;
             });
+
+            // FIX: Better Error Handling
             peer.on('error', (err) => { 
                 console.error(err);
-                if (!isHost) { 
-                    // Optional: alert user before reload
-                    // alert("Connection failed. Retrying...");
-                    window.location.hash = ''; 
-                    window.location.reload(); 
-                } 
+                if (!isHost && (err.type === 'peer-unavailable' || err.type === 'network')) { 
+                   alert("Connection failed. Please try scanning again.");
+                   window.location.hash = ''; window.location.reload(); 
+                }
             });
         }
 
-        // FIX 1: Added options for reliable data transfer on Mobile
         function connectToPeer(id) { 
-            setupConnection(peer.connect(id, {
-                reliable: true,
-                serialization: 'json'
-            })); 
+            // FIX: Wait slightly to ensure peer is ready
+            setTimeout(() => {
+                setupConnection(peer.connect(id, { reliable: true })); 
+            }, 1000);
         }
 
         function setupConnection(c) {
             conn = c;
             conn.on('open', () => {
-                // Show End-to-End Encrypted Animation
                 const overlay = document.getElementById('connection-overlay');
                 overlay.style.display = 'flex';
                 setTimeout(() => {
                     overlay.style.display = 'none';
                 }, 2500);
-
-                // FIX 2: Trigger Ripple/Wave Animation on Mobile Folder Icon
-                const folderBtn = document.getElementById('folder-btn');
-                if(folderBtn) folderBtn.classList.add('btn-pulse');
 
                 document.getElementById('status-badge').innerText = 'Connected';
                 document.getElementById('status-badge').style.background = 'var(--green)';
@@ -1010,15 +928,8 @@
                 if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
             });
             conn.on('data', handleData);
-            conn.on('close', () => { 
-                // Remove animation on disconnect
-                const folderBtn = document.getElementById('folder-btn');
-                if(folderBtn) folderBtn.classList.remove('btn-pulse');
-
-                alert('Disconnected'); 
-                window.location.hash = ''; 
-                window.location.reload(); 
-            });
+            conn.on('close', () => { alert('Disconnected'); window.location.hash = ''; window.location.reload(); });
+            conn.on('error', (err) => console.error("Conn Error", err));
         }
 
         function handleData(data) {
@@ -1040,6 +951,7 @@
 
         async function shareQRCode() {
             const canvas = document.querySelector('#qrcode canvas');
+            if(!canvas) return;
             const blob = await (await fetch(canvas.toDataURL())).blob();
             const file = new File([blob], "qr.png", { type: "image/png" });
             if (navigator.share) navigator.share({ files: [file], url: window.location.href + '#' + myId });
@@ -1140,7 +1052,6 @@
             if (bar) bar.style.width = pct + '%';
             if (txt) txt.innerText = pct + '%';
 
-            // Real-time ETA Calculation
             const elapsed = (Date.now() - start) / 1000;
             const rate = cur / elapsed;
             const left = (tot - cur) / rate;
@@ -1187,46 +1098,53 @@
 
         // HD Media Constraints
         const mediaConstraints = {
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
-            },
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                frameRate: { ideal: 30 },
-                facingMode: "user"
-            }
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+            video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 }, facingMode: "user" }
         };
 
+        // FIX: Permission Handling Logic
+        function checkMediaPermissions(vid) {
+            return new Promise((resolve, reject) => {
+                const constraints = vid ? mediaConstraints : { audio: true, video: false };
+                navigator.mediaDevices.getUserMedia(constraints)
+                .then(stream => {
+                    resolve(stream);
+                })
+                .catch(err => {
+                    // If permission denied, showing the Modal Guide
+                    if(err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        document.getElementById('perm-modal').style.display = 'flex';
+                    } else {
+                        alert("Error accessing media devices: " + err.message);
+                    }
+                    reject(err);
+                });
+            });
+        }
+
         function initCall(vid) {
-            const constraints = vid ? mediaConstraints : { audio: true, video: false };
-            navigator.mediaDevices.getUserMedia(constraints).then(s => {
-                localStream = s; document.getElementById('active-call-ui').style.display = 'flex';
+            checkMediaPermissions(vid).then(s => {
+                localStream = s; 
+                document.getElementById('active-call-ui').style.display = 'flex';
                 document.getElementById('local-video').srcObject = s;
                 const call = peer.call(conn.peer, s, { metadata: { type: vid ? 'video' : 'audio' } });
                 handleCall(call);
-            }).catch(err => {
-                alert("Could not access camera/microphone. Please check permissions.");
-                console.error(err);
-            });
+            }).catch(e => console.log("Call init aborted"));
         }
+
         function answerCall() {
             document.getElementById('incoming-call-ui').style.display = 'none';
             const vid = window.pendingCall.metadata.type === 'video';
-            const constraints = vid ? mediaConstraints : { audio: true, video: false };
-
-            navigator.mediaDevices.getUserMedia(constraints).then(s => {
-                localStream = s; document.getElementById('active-call-ui').style.display = 'flex';
+            
+            checkMediaPermissions(vid).then(s => {
+                localStream = s; 
+                document.getElementById('active-call-ui').style.display = 'flex';
                 document.getElementById('local-video').srcObject = s;
                 window.pendingCall.answer(s);
                 handleCall(window.pendingCall);
-            }).catch(err => {
-                alert("Could not access camera/microphone. Please check permissions.");
-                console.error(err);
-            });
+            }).catch(e => console.log("Call answer aborted"));
         }
+
         function handleCall(call) {
             activeCall = call;
             call.on('stream', r => { document.getElementById('remote-video').srcObject = r; });
@@ -1247,16 +1165,25 @@
             document.getElementById('scanner-overlay').style.display = 'flex';
             qrScanner = new Html5Qrcode("qr-reader");
             qrScanner.start({ facingMode: "environment" }, { fps: 30, qrbox: 250 }, t => {
-                // Stop scanner before reload to ensure clean state
-                qrScanner.stop().then(() => {
-                    qrScanner.clear(); 
-                    document.getElementById('scanner-overlay').style.display = 'none';
-                    const id = t.split('#')[1];
-                    if (id) { 
+                // FIX: Handle different scanner results
+                stopScanner(); 
+                try {
+                    let id = '';
+                    if(t.includes('#')) {
+                        id = t.split('#')[1];
+                    } else {
+                        id = t; // Assume raw ID if no hash
+                    }
+                    
+                    if (id && id.length > 0) { 
                         window.location.hash = id; 
                         window.location.reload(); 
+                    } else {
+                        alert("Invalid QR Code");
                     }
-                });
+                } catch(e) {
+                    alert("Error parsing QR");
+                }
             });
         }
         function stopScanner() { if (qrScanner) qrScanner.stop().then(() => { qrScanner.clear(); document.getElementById('scanner-overlay').style.display = 'none'; }); }
