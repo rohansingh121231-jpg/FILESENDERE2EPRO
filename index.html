@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,6 +28,7 @@
             --white: #ffffff;
             --red: #d32f2f;
             --green: #25d366;
+            --ripple-color: rgba(7, 94, 84, 0.6);
         }
 
         body {
@@ -272,6 +273,47 @@
             padding: 5px;
         }
 
+        /* NEW: Dynamic Wave Animation for Folder Icon */
+        .btn-pulse {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-pulse::before,
+        .btn-pulse::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--ripple-color);
+            opacity: 0;
+            z-index: -1;
+            animation: wave 2s infinite ease-out;
+        }
+
+        .btn-pulse::after {
+            animation-delay: 1s;
+        }
+
+        @keyframes wave {
+            0% {
+                width: 100%;
+                height: 100%;
+                opacity: 0.6;
+            }
+            100% {
+                width: 250%;
+                height: 250%;
+                opacity: 0;
+            }
+        }
+        /* END Wave Animation */
+
+
         .messages {
             flex-grow: 1;
             overflow-y: auto;
@@ -376,9 +418,7 @@
             gap: 8px;
             flex-shrink: 0;
             width: 100%;
-            /* Ensure full width */
             box-sizing: border-box;
-            /* Include padding in width */
         }
 
         #msg-input {
@@ -389,10 +429,8 @@
             outline: none;
             font-size: 15px;
             min-width: 0;
-            /* Prevents input from forcing width */
         }
 
-        /* Updated Send Button Style */
         .send-btn {
             background: var(--primary);
             color: white;
@@ -405,12 +443,9 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            /* Prevents squeezing */
             margin-right: 2px;
-            /* Slight adjustment */
         }
 
-        /* Typing Indicator */
         .typing-indicator {
             font-size: 11px;
             color: var(--secondary);
@@ -420,17 +455,9 @@
         }
 
         @keyframes flash {
-            0% {
-                opacity: 0.3;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0.3;
-            }
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
         }
 
         /* Mobile Header Controls */
@@ -504,17 +531,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
         .active-call-ui {
@@ -578,7 +597,7 @@
             background: var(--red);
         }
 
-        /* --- NEW: Connection Lock Overlay Styles --- */
+        /* Connection Lock Overlay */
         .connection-overlay {
             position: fixed;
             top: 0;
@@ -594,71 +613,15 @@
             flex-direction: column;
         }
 
-        .lock-animation {
-            text-align: center;
-        }
+        .lock-animation { text-align: center; }
+        .lock-svg { width: 120px; height: 120px; }
+        .lock-body { fill: #4285f4; animation: lockBody 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .lock-shackle { fill: none; stroke: #4285f4; stroke-width: 5; stroke-linecap: round; transform-origin: 50% 35%; animation: lockShackle 0.6s ease forwards 0.4s; }
+        .checkmark { fill: none; stroke: #34a853; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: checkDraw 0.5s ease forwards 1s; }
 
-        .lock-svg {
-            width: 120px;
-            height: 120px;
-        }
-
-        .lock-body {
-            fill: #4285f4;
-            animation: lockBody 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .lock-shackle {
-            fill: none;
-            stroke: #4285f4;
-            stroke-width: 5;
-            stroke-linecap: round;
-            transform-origin: 50% 35%;
-            animation: lockShackle 0.6s ease forwards 0.4s;
-        }
-
-        .checkmark {
-            fill: none;
-            stroke: #34a853;
-            stroke-width: 5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 100;
-            stroke-dashoffset: 100;
-            animation: checkDraw 0.5s ease forwards 1s;
-        }
-
-        @keyframes lockBody {
-            from {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes lockShackle {
-            0% {
-                transform: translateY(-15px);
-                opacity: 0;
-            }
-
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes checkDraw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        /* --- END Connection Lock --- */
+        @keyframes lockBody { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes lockShackle { 0% { transform: translateY(-15px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes checkDraw { to { stroke-dashoffset: 0; } }
 
         /* Modals */
         .modal {
@@ -720,10 +683,7 @@
             flex-direction: column;
         }
 
-        #qr-reader {
-            flex-grow: 1;
-        }
-
+        #qr-reader { flex-grow: 1; }
         .scanner-close {
             position: absolute;
             top: 20px;
@@ -794,7 +754,6 @@
                 right: 10px;
             }
 
-            /* Better padding for mobile input */
             .input-area {
                 padding: 8px;
                 gap: 6px;
@@ -806,7 +765,6 @@
 <body>
 
     <div class="app-container">
-        <!-- SIDEBAR -->
         <div class="sidebar" id="sidebar">
             <div class="header">
                 <div style="display:flex; align-items:center;">
@@ -836,11 +794,11 @@
             </div>
         </div>
 
-        <!-- CHAT AREA -->
         <div class="chat-area" id="chat-area">
             <div class="chat-header">
                 <div class="chat-user">
-                    <button class="icon-btn mobile-only" onclick="toggleSidebar()">📁</button>
+                    <button class="icon-btn mobile-only" id="folder-btn" onclick="toggleSidebar()">📁</button>
+                    
                     <div class="avatar">👤</div>
                     <div>
                         <div style="font-weight:bold;">Peer</div>
@@ -868,15 +826,11 @@
                 <button class="icon-btn" onclick="document.getElementById('img-input').click()">📎</button>
                 <input type="file" id="img-input" accept="image/*" style="display:none">
                 <input type="text" id="msg-input" placeholder="Type a message...">
-                <!-- Send Button -->
                 <button class="send-btn" onmousedown="event.preventDefault()" onclick="sendText()">➤</button>
             </div>
         </div>
     </div>
 
-    <!-- OVERLAYS -->
-
-    <!-- NEW: CONNECTION LOCK OVERLAY -->
     <div class="connection-overlay" id="connection-overlay">
         <div class="lock-animation">
             <svg class="lock-svg" viewBox="0 0 100 100">
@@ -889,7 +843,6 @@
                 End-to-End Encrypted</p>
         </div>
     </div>
-    <!-- END CONNECTION LOCK OVERLAY -->
 
     <div class="fullscreen-overlay" id="incoming-call-ui">
         <div class="call-card">
@@ -951,7 +904,7 @@
                 }, 1000);
             });
 
-            // ENTER KEY TO SEND (Desktop Fix)
+            // ENTER KEY TO SEND
             msgInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     sendText();
@@ -983,7 +936,7 @@
             const hash = window.location.hash.substring(1);
             isHost = !hash;
 
-            // Enhanced STUN server list for better connectivity
+            // Enhanced STUN server list for better mobile connectivity
             const peerConfig = {
                 config: {
                     iceServers: [
@@ -992,7 +945,9 @@
                         { urls: 'stun:stun2.l.google.com:19302' },
                         { urls: 'stun:stun3.l.google.com:19302' },
                         { urls: 'stun:stun4.l.google.com:19302' },
-                    ]
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ],
+                    iceCandidatePoolSize: 10
                 }
             };
 
@@ -1015,10 +970,24 @@
                 document.getElementById('incoming-call-type').innerText = call.metadata?.type === 'video' ? 'Incoming Video Call...' : 'Incoming Voice Call...';
                 window.pendingCall = call;
             });
-            peer.on('error', () => { if (!isHost) { window.location.hash = ''; window.location.reload(); } });
+            peer.on('error', (err) => { 
+                console.error(err);
+                if (!isHost) { 
+                    // Optional: alert user before reload
+                    // alert("Connection failed. Retrying...");
+                    window.location.hash = ''; 
+                    window.location.reload(); 
+                } 
+            });
         }
 
-        function connectToPeer(id) { setupConnection(peer.connect(id)); }
+        // FIX 1: Added options for reliable data transfer on Mobile
+        function connectToPeer(id) { 
+            setupConnection(peer.connect(id, {
+                reliable: true,
+                serialization: 'json'
+            })); 
+        }
 
         function setupConnection(c) {
             conn = c;
@@ -1030,6 +999,10 @@
                     overlay.style.display = 'none';
                 }, 2500);
 
+                // FIX 2: Trigger Ripple/Wave Animation on Mobile Folder Icon
+                const folderBtn = document.getElementById('folder-btn');
+                if(folderBtn) folderBtn.classList.add('btn-pulse');
+
                 document.getElementById('status-badge').innerText = 'Connected';
                 document.getElementById('status-badge').style.background = 'var(--green)';
                 document.getElementById('connect-panel').style.display = 'none';
@@ -1037,7 +1010,15 @@
                 if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
             });
             conn.on('data', handleData);
-            conn.on('close', () => { alert('Disconnected'); window.location.hash = ''; window.location.reload(); });
+            conn.on('close', () => { 
+                // Remove animation on disconnect
+                const folderBtn = document.getElementById('folder-btn');
+                if(folderBtn) folderBtn.classList.remove('btn-pulse');
+
+                alert('Disconnected'); 
+                window.location.hash = ''; 
+                window.location.reload(); 
+            });
         }
 
         function handleData(data) {
@@ -1266,8 +1247,16 @@
             document.getElementById('scanner-overlay').style.display = 'flex';
             qrScanner = new Html5Qrcode("qr-reader");
             qrScanner.start({ facingMode: "environment" }, { fps: 30, qrbox: 250 }, t => {
-                stopScanner(); const id = t.split('#')[1];
-                if (id) { window.location.hash = id; window.location.reload(); }
+                // Stop scanner before reload to ensure clean state
+                qrScanner.stop().then(() => {
+                    qrScanner.clear(); 
+                    document.getElementById('scanner-overlay').style.display = 'none';
+                    const id = t.split('#')[1];
+                    if (id) { 
+                        window.location.hash = id; 
+                        window.location.reload(); 
+                    }
+                });
             });
         }
         function stopScanner() { if (qrScanner) qrScanner.stop().then(() => { qrScanner.clear(); document.getElementById('scanner-overlay').style.display = 'none'; }); }
